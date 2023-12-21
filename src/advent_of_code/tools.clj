@@ -5,3 +5,7 @@
   (with-open [rdr (io/reader filename)]
     (->> (line-seq rdr)
          (into []))))
+
+(defn parse-int [s]
+  (try (Integer/parseInt (str s))
+       (catch Exception _)))

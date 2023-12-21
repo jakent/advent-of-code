@@ -9,3 +9,6 @@
 (defn parse-int [s]
   (try (Integer/parseInt (str s))
        (catch Exception _)))
+
+(defn read-vector-string [s]
+  (read-string (format "[%s]" s)))

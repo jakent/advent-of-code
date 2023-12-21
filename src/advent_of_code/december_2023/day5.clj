@@ -1,16 +1,14 @@
 (ns advent-of-code.december-2023.day5
-  (:require [clojure.string :as str]))
-
-(defn read-vector-string [s]
-  (read-string (format "[%s]" s)))
+  (:require [advent-of-code.tools :as tools]
+            [clojure.string :as str]))
 
 (defn parse-seeds [^String raw]
   (-> (str/split raw #"seeds: ")
       second
-      read-vector-string))
+      tools/read-vector-string))
 
 (defn parse-conversion-map [^String raw]
-  (->> (read-vector-string raw)
+  (->> (tools/read-vector-string raw)
        (partition 3)))
 
 (defn parse-almanac [^String raw-almanac]

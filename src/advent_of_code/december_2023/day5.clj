@@ -34,21 +34,31 @@
           source
           conversion-matrix))
 
+(defn find-min-location [{:keys [seed-to-soil
+                                 soil-to-fertilizer
+                                 fertilizer-to-water
+                                 water-to-light
+                                 light-to-temperature
+                                 temperature-to-humidity
+                                 humidity-to-location]}]
+  (map (comp #(read-conversion-map % humidity-to-location)
+             #(read-conversion-map % temperature-to-humidity)
+             #(read-conversion-map % light-to-temperature)
+             #(read-conversion-map % water-to-light)
+             #(read-conversion-map % fertilizer-to-water)
+             #(read-conversion-map % soil-to-fertilizer)
+             #(read-conversion-map % seed-to-soil))))
+
 (defn problem-1 []
-  (let [{:keys [seeds
-                seed-to-soil
-                soil-to-fertilizer
-                fertilizer-to-water
-                water-to-light
-                light-to-temperature
-                temperature-to-humidity
-                humidity-to-location]} (parse-almanac (slurp "resources/december-2023/day5"))]
-    (->> (map (comp #(read-conversion-map % humidity-to-location)
-                    #(read-conversion-map % temperature-to-humidity)
-                    #(read-conversion-map % light-to-temperature)
-                    #(read-conversion-map % water-to-light)
-                    #(read-conversion-map % fertilizer-to-water)
-                    #(read-conversion-map % soil-to-fertilizer)
-                    #(read-conversion-map % seed-to-soil))
-              seeds)
+  (let [{:keys [seeds] :as almanac} (parse-almanac (slurp "resources/december-2023/day5"))]
+    (->> (transduce (find-min-location almanac) conj seeds)
          (apply min))))
+
+(defn problem-2 [_]
+  (let [{:keys [seeds] :as almanac} (parse-almanac (slurp "resources/december-2023/day5"))]
+    (transduce (comp (mapcat (fn [[start range-length]]
+                               (range start (+ start range-length))))
+                     (find-min-location almanac))
+               min
+               Long/MAX_VALUE
+               (partition 2 seeds))))

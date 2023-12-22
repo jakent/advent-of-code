@@ -34,17 +34,23 @@
        (map (partial apply calculate-distance))
        (apply +)))
 
-(defn expand-universe [file-lines]
-  (let [expand (partial mapcat #(if (every? #{\.} %) [% %] [%]))]
+(defn expand-universe [expand-amount file-lines]
+  (let [expand (partial mapcat #(if (every? #{\.} %) (repeat expand-amount %) [%]))]
     (->> file-lines
          expand
          tools/transpose
          expand)))
 
+(defn cosmic-expansion [expand-amount]
+  (->> (tools/read-file-lines "resources/december-2023/day11")
+       (map (partial map identity))
+       (expand-universe expand-amount)
+       calculate-shortest-path-sum))
+
 (defn problem-1
   "10231178"
   []
-  (->> (tools/read-file-lines "resources/december-2023/day11")
-       (map (partial map identity))
-       expand-universe
-       calculate-shortest-path-sum))
+  (cosmic-expansion 2))
+
+(defn problem-2 []
+  (cosmic-expansion 1000000))

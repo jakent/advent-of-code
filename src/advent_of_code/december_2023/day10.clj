@@ -16,16 +16,6 @@
    \F {[-1 0] [0 1]
        [0 -1] [1 0]}})
 
-(defn file-lines->location-map [file-lines]
-  (->> (map-indexed (comp (partial into {})
-                          (fn [[x row]]
-                            (map-indexed
-                              (fn [y cell] [[x y] cell])
-                              row))
-                          vector)
-                    file-lines)
-       (apply merge)))
-
 (defn calculate-path [locations]
   (fn [current-location step path]
     (let [char (locations current-location)]
@@ -52,7 +42,7 @@
   "6927"
   []
   (let [locations (->> (tools/read-file-lines "resources/december-2023/day10")
-                       file-lines->location-map)
+                       tools/file-lines->location-map)
         [start step] (find-first-step locations)
         path      ((calculate-path locations) start step #{})]
     (/ (count path) 2)))

@@ -18,3 +18,17 @@
         y2 [-1 0 1]
         :when (not= x2 y2 0)]
     (vector (+ x x2) (+ y y2))))
+
+(defn file-lines->location-map [file-lines]
+  (->> (map-indexed (comp (partial into {})
+                          (fn [[x row]]
+                            (map-indexed
+                              (fn [y cell] [[x y] cell])
+                              row))
+                          vector)
+                    file-lines)
+       (apply merge)))
+
+(defn transpose [xs]
+  (->> (apply interleave xs)
+       (partition (count xs))))

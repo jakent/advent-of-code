@@ -1,12 +1,6 @@
 (ns advent-of-code.december-2023.day3
   (:require [advent-of-code.tools :as tools]))
 
-(defn neighbors [[x y]]
-  (for [x2 [-1 0 1]
-        y2 [-1 0 1]
-        :when (not= x2 y2 0)]
-    (vector (+ x x2) (+ y y2))))
-
 (defn is-symbol? [char]
   (if (or (nil? char)
           (#{\. \0 \1 \2 \3 \4 \5 \6 \7 \8 \9} char))
@@ -14,7 +8,7 @@
     true))
 
 (defn adjacent-symbol? [chars [x y]]
-  (->> (neighbors [x y])
+  (->> (tools/neighbors [x y])
        (map (partial get-in chars))
        (some is-symbol?)
        boolean))
